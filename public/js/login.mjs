@@ -3,7 +3,6 @@ import { showAlert } from './alerts.mjs';
 
 export const login = async (email, password) => {
   try {
-    console.log('this from login function', email, password);
     const result = await axios({
       method: 'POST',
       url: 'http://localhost:8000/api/v1/users/login',
@@ -12,10 +11,7 @@ export const login = async (email, password) => {
         password,
       },
     });
-    console.log(
-      'this must be res of the request logged in the browser console:',
-      result
-    );
+    
     if (result.data.status === 'success') {
       showAlert('success', 'Welcom to Natours APP!');
       window.setTimeout(() => {

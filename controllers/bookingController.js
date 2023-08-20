@@ -45,8 +45,8 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
 
 exports.creatBookingCheckout=catchAsync(async(req,res,next)=>{
   const {tour,user,price}=req.params;
-  console.log(req.params);
-  console.log('redirect to :',req.originalUrl.split('?')[0]);
+  // console.log(req.params);
+  // console.log('redirect to :',req.originalUrl.split('?')[0]);
   if(!tour ||  !user ||  !price) return next();
 
    await Booking.create({tour,user,price}); 

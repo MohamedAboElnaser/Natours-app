@@ -16,7 +16,7 @@ if (loginForm) {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
-    console.log('data from eventListener', email, password);
+    // console.log('data from eventListener', email, password);
     login(email, password);
   });
 }
@@ -61,7 +61,7 @@ if (updataPasswordForm)
     bookTourBtn.addEventListener('click',e=>{
         e.target.textContent='processing...';
         const {tourId}=e.target.dataset;
-        console.log(e.target);
+        // console.log(e.target);
         bookTour(tourId);
     })
   }

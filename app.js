@@ -7,6 +7,7 @@ const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const ralteLimit = require('express-rate-limit');
 const cookiParser = require('cookie-parser');
+const compression=require('compression');
 
 const tourRouter = require('./routs/tourRouter');
 const userRouter = require('./routs/userRouter');
@@ -55,6 +56,8 @@ app.use(xss());
 // if (process.env.NODE_ENV === 'development')
 app.use(morgan('dev'));
 
+// compression middleware compress the body of res[text,html]
+app.use(compression());
 // set the middleware
 
 //----->this process is called mounting the router

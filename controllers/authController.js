@@ -110,7 +110,7 @@ exports.protect = catchAsync(async (req, res, next) => {
     token,
     process.env.JWT_SECRET
   );
-  console.log(decodedToken);
+  // console.log(decodedToken);
 
   //3] check if User still exist  [this step is important in case any person could in any way to get someone else token
   // so we check first if the user still exist or reset his account or any thing]
@@ -133,7 +133,7 @@ exports.protect = catchAsync(async (req, res, next) => {
 
   req.user = currentUser;
   res.locals.user = currentUser;
-  console.log('currentUser form the protect :', currentUser);
+  // console.log('currentUser form the protect :', currentUser);
   //Her we give the access to the protected rout ')
   next();
 });
@@ -147,7 +147,7 @@ exports.isLoggedIn = async (req, res, next) => {
         req.cookies.jwt,
         process.env.JWT_SECRET
       );
-      console.log(decodedToken);
+      // console.log(decodedToken);
 
       //2] check if User still exist  [this step is important in case any person could in any way to get someone else token
       // so we check first if the user still exist or reset his account or any thing]
@@ -242,7 +242,7 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   //   1]Get user from collection
   //here we have the access to user property of the req from the protect middleware
   const user = await User.findOne({ _id: req.user._id }).select('+password');
-  console.log('user from updatepassword:', user);
+  // console.log('user from updatepassword:', user);
   //   2]check if Posted current password is correct
   if (!(await user.correctPassword(req.body.currentPassword, user.password)))
     return next(
