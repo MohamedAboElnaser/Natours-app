@@ -7,7 +7,8 @@ const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const ralteLimit = require('express-rate-limit');
 const cookiParser = require('cookie-parser');
-const compression=require('compression');
+const compression = require('compression');
+const cors = require('cors');
 
 const tourRouter = require('./routs/tourRouter');
 const userRouter = require('./routs/userRouter');
@@ -60,6 +61,9 @@ app.use(morgan('dev'));
 app.use(compression());
 // set the middleware
 
+// use cors middleware
+app.use(cors());
+  
 //----->this process is called mounting the router
 app.use('/', viewsRouter);
 app.use('/api/v1/tours', tourRouter);

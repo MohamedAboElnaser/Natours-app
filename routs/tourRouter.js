@@ -49,8 +49,5 @@ router
     tourController.deleteTour
   );
 
-// Post  api/v1/tours/tourId/reviwes
-// GET  api/v1/tours/tourId/reviwes
-// GET  api/v1/tours/tourId/reviwes/asdf443u
 
 module.exports = router;
