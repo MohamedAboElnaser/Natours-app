@@ -5,14 +5,14 @@ const bookingController = require('./../controllers/bookingController');
 
 const router = express.Router();
 
-router.get(
-  '/',
-  bookingController.creatBookingCheckout,
-  authController.isLoggedIn,
-  viewsController.getOverview
-);
+router.get('/', authController.isLoggedIn, viewsController.getOverview);
 router.get('/me', authController.protect, viewsController.getUserAccount);
-router.get('/my-tours', authController.protect, viewsController.getMyTours);
+router.get(
+  '/my-tours',
+  bookingController.creatBookingCheckout,
+  authController.protect,
+  viewsController.getMyTours
+);
 
 router.get(
   '/tour/:tourSlug',
