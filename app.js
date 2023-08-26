@@ -15,11 +15,19 @@ const userRouter = require('./routs/userRouter');
 const reviewRouter = require('./routs/reviewRouter');
 const viewsRouter = require('./routs/viewsRouter');
 const bookingRouter = require('./routs/bookingRouter');
+const bookingController = require('./controllers/bookingController');
 
 const AppErorr = require('./utils/appError');
 const globalErrorHandeler = require('./controllers/errorController');
 
 const app = express();
+
+app.post(
+  '/webhook',
+  express.raw({ type: 'application/json' }),
+  bookingController.webhookCheckout
+);
+
 //Body parcer middleware to read the body of requres and set it to req.body in json format
 app.use(express.json({ limit: '10kb' }));
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
@@ -63,7 +71,7 @@ app.use(compression());
 
 // use cors middleware
 app.use(cors());
-  
+
 //----->this process is called mounting the router
 app.use('/', viewsRouter);
 app.use('/api/v1/tours', tourRouter);
