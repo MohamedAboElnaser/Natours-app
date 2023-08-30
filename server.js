@@ -28,10 +28,11 @@ mongoose
 const port = process.env.PORT || 3000;
 ///-------------------
 const server = app.listen(port, () => {
-  if (!module.child) console.log(`Server is running at Port: ${port} ....`);
+  if (!module.child)
+    console.log(
+      `Server is running in ${process.env.NODE_ENV} environment at Port: ${port} ....`
+    );
 });
-
-console.log(process.env.NODE_ENV);
 
 //Global handleing the unhandled rejected promises
 
