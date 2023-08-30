@@ -12,7 +12,8 @@ Welcome to the Natours Backend API! This backend application serves as the heart
 
 ## Description
 
-Natours Backend API is the foundation of the Natours application, responsible for handling data related to nature tours, user accounts, bookings, and more. It follows RESTful principles and provides endpoints for CRUD (Create, Read, Update, Delete) operations on different resources. This API is designed to be scalable and maintainable, making it an ideal backend solution for any tour booking application.
+Natours Backend API is the foundation of the Natours application, responsible for handling data related to nature tours, user accounts, bookings, and more. It follows the Model-View-Controller (MVC) architecture, providing a structured and modular approach to development. This API is designed to be scalable and maintainable, making it an ideal backend solution for any tour booking application.
+
 
 ## Features
 
