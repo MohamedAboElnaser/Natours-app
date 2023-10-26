@@ -8,7 +8,7 @@ const csp =
 exports.getOverview = catchAsync(async (req, res) => {
   //1) get all the tours from the DB
   const tours = await Tour.find();
-  //2)build the templage
+  //2)build the template
 
   //3)send the rendered template to the client
   res
@@ -34,7 +34,7 @@ exports.getTour = catchAsync(async (req, res, next) => {
   }
 
   // 2] build the template
-  // 3] render the data receved from the step1
+  // 3] render the data received from the step1
   res.status(200).set('Content-Security-Policy', csp).render('tour', {
     title: tour.name,
     tour,

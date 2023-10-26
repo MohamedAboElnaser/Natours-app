@@ -45,7 +45,7 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
   });
 });
 
-// exports.creatBookingCheckout=catchAsync(async(req,res,next)=>{
+// exports.createBookingCheckout=catchAsync(async(req,res,next)=>{
 //   const {tour,user,price}=req.query;
 //   // console.log(req.query);
 //   // console.log('redirect to :',req.originalUrl.split('?')[0]);
@@ -61,13 +61,13 @@ const createBookingDocument = catchAsync(async (session) => {
   await Booking.create({ tour, user, price });
 });
 exports.webhookCheckout = (req, res, next) => {
-  const signiture = req.headers['stripe-signature'];
+  const signature = req.headers['stripe-signature'];
   let event;
   try {
     //create the event
     event = stripe.webhooks.constructEvent(
       req.body,
-      signiture,
+      signature,
       process.env.STRIP_WEBHOOK_SECRET
     );
   } catch (err) {
@@ -76,14 +76,14 @@ exports.webhookCheckout = (req, res, next) => {
   }
   if (event.type === 'checkout.session.completed') {
     createBookingDocument(event.data.object);
-    console.log('Booking document created successfuly!✅✅');
+    console.log('Booking document created successful!✅✅');
     res.status(200).json({
       success: true,
     });
   }
 };
 
-exports.createBooking = factory.creatOne(Booking);
+exports.createBooking = factory.createOne(Booking);
 exports.getBooking = factory.getOne(Booking);
 exports.getAllBookings = factory.getAll(Booking);
 exports.updateBooking = factory.updateOne(Booking);

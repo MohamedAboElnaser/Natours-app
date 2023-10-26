@@ -5,8 +5,8 @@ const morgan = require('morgan');
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
-const ralteLimit = require('express-rate-limit');
-const cookiParser = require('cookie-parser');
+const rateLimit = require('express-rate-limit');
+const cookieParser = require('cookie-parser');
 const compression = require('compression');
 const cors = require('cors');
 
@@ -17,8 +17,8 @@ const viewsRouter = require('./routs/viewsRouter');
 const bookingRouter = require('./routs/bookingRouter');
 const bookingController = require('./controllers/bookingController');
 
-const AppErorr = require('./utils/appError');
-const globalErrorHandeler = require('./controllers/errorController');
+const AppError = require('./utils/appError');
+const globalErrorHandler = require('./controllers/errorController');
 
 const app = express();
 
@@ -28,11 +28,11 @@ app.post(
   bookingController.webhookCheckout
 );
 
-//Body parcer middleware to read the body of requres and set it to req.body in json format
+//Body parser middleware to read the body of request and set it to req.body in json format
 app.use(express.json({ limit: '10kb' }));
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
-//cooki-parser
-app.use(cookiParser());
+//cookie-parser
+app.use(cookieParser());
 
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
@@ -44,8 +44,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 //set security HTTP headers
 app.use(helmet());
 
-//limiting requrests from the same IP address
-const limiter = ralteLimit({
+//limiting requests from the same IP address
+const limiter = rateLimit({
   max: 100,
   windwoMs: 60 * 60 * 1000,
   message:
@@ -54,7 +54,7 @@ const limiter = ralteLimit({
 
 app.use('/api', limiter);
 
-//Data Sanitization aganist Nosql qurery injection
+//Data Sanitization against Nosql query injection
 app.use(mongoSanitize());
 
 //Data sanitization against XSS
@@ -79,12 +79,12 @@ app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
 app.use('/api/v1/bookings', bookingRouter);
 
-//handel unhandeled Routs but this middelware must be the last one at
+//handel unhandled Routs but this middleware must be the last one at
 // middleware stack
 app.all('*', (req, res, next) => {
-  next(new AppErorr(`Can not response to ${req.originalUrl}`, 404));
+  next(new AppError(`Can not response to ${req.originalUrl}`, 404));
 });
 
 // Global ERROR handling Middleware
-app.use(globalErrorHandeler);
+app.use(globalErrorHandler);
 module.exports = app;

@@ -10,7 +10,7 @@ exports.deleteOne = (Model) =>
     });
 
     res.status(204).json({
-      status: 'document deleted successfuly:)',
+      status: 'document deleted successful:)',
       data: null,
     });
   });
@@ -33,7 +33,7 @@ exports.updateOne = (Model) =>
     });
   });
 
-exports.creatOne = (Model) =>
+exports.createOne = (Model) =>
   catchAsync(async (req, res, next) => {
     const doc = await Model.create(req.body);
 
@@ -69,9 +69,9 @@ exports.getAll = (Model) =>
     let filter = {};
     if (req.params.tourId) filter = { tour: req.params.tourId };
 
-    // execute the quary to return the documents
+    // execute the query to return the documents
     const features = new APIFeatures(Model.find(filter), req.query)
-      .projection() //<--here is BUG when useing filter:((
+      .projection() //<--here is BUG when using filter:((
       .filter()
       .sort()
       .pagination();

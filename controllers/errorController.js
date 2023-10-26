@@ -1,31 +1,31 @@
 /* eslint-disable node/no-unsupported-features/es-syntax */
-const AppErorr = require('./../utils/appError');
+const AppError = require('./../utils/appError');
 
 const handelCastErrorDB = (err) => {
-  const message = `Invalide ${err.path}: ${err.value}`;
-  return new AppErorr(message, 400);
+  const message = `Invalid ${err.path}: ${err.value}`;
+  return new AppError(message, 400);
 };
-const handelDoplicateFieldsDB = (err) => {
+const handelDuplicateFieldsDB = (err) => {
   const value = err.errmsg
     .match(/(["'])(?:(?=(\\?))\2.)*?\1/)[0]
     .replaceAll('"', '');
   const message = `Duplicate field Value : ${value}`;
-  return new AppErorr(message, 400);
+  return new AppError(message, 400);
 };
 const handleValidationErrorDB = (err) => {
   const message = Object.values(err.errors).map((el) => el.message);
-  return new AppErorr(message.join('. '), 400);
+  return new AppError(message.join('. '), 400);
 };
 
 const handleJwtError = () =>
-  new AppErorr('Invalid token. Please log again', 401);
+  new AppError('Invalid token. Please log again', 401);
 
 const handleExpiredJWT = () =>
-  new AppErorr(
+  new AppError(
     'Your token has expired,Pleas login again to access the routs',
     401
   );
-const sendErrDevel = (err, res, req) => {
+const sendDevelopmentError = (err, res, req) => {
   //1]This response go to API client
   if (req.originalUrl.startsWith('/api')) {
     return res.status(err.statusCode).json({
@@ -35,9 +35,9 @@ const sendErrDevel = (err, res, req) => {
       errStack: err.stack,
     });
   }
-  //2]This to REDERED website
+  //2]This to RENDERED website
   return res.status(err.statusCode).render('error', {
-    title: 'Error happend!',
+    title: 'Error happened!',
     msg: err.message,
   });
 };
@@ -72,7 +72,7 @@ const sendErrProd = (err, req, res) => {
 
     // 2] we render simple error message to the client
     return res.status(err.statusCode).render('error', {
-      title: 'Error happend!',
+      title: 'Error happened!',
       msg: err.message,
     });
   }
@@ -88,14 +88,14 @@ module.exports = (err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
   err.status = err.status || 'error';
 
-  if (process.env.NODE_ENV === 'development') sendErrDevel(err, res, req);
+  if (process.env.NODE_ENV === 'development') sendDevelopmentError(err, res, req);
   if (process.env.NODE_ENV === 'production') {
     let error = { ...err, errmsg: err.message };
     error.message=err.message;
-    //here we check err.name not error.name as name properity is in the prototype chain of err
+    //here we check err.name not error.name as name property is in the prototype chain of err
     // and we lose this chain after this line let error={...err}
     if (err.name === 'CastError') error = handelCastErrorDB(error);
-    if (err.code === 11000) error = handelDoplicateFieldsDB(error);
+    if (err.code === 11000) error = handelDuplicateFieldsDB(error);
     if (err.name === 'ValidationError') error = handleValidationErrorDB(error);
     if (err.name === 'JsonWebTokenError') error = handleJwtError(error);
     if (err.name === 'TokenExpiredError') error = handleExpiredJWT(error);

@@ -7,7 +7,7 @@ const User = require('./../models/userModel');
 const catchAsync = require('./../utils/catchAsync');
 const factory = require('./handlerFactory');
 
-const filtrObject = (obj, ...allowedFields) => {
+const filterObject = (obj, ...allowedFields) => {
   const newObj = {};
   Object.keys(obj).forEach((el) => {
     if (allowedFields.includes(el)) newObj[el] = obj[el];
@@ -15,7 +15,7 @@ const filtrObject = (obj, ...allowedFields) => {
   return newObj;
 };
 /**
-  to upload images we use multer which is a middleware for handelling
+  to upload images we use multer which is a middleware for handling
   multi-part form data 
 */
 // const multerStorage = multer.diskStorage({
@@ -23,8 +23,8 @@ const filtrObject = (obj, ...allowedFields) => {
 //     cb(null, 'public/img/users');
 //   },
 //   filename: (req, file, cb) => {
-//     const extention = file.mimetype.split('/')[1];
-//     cb(null, `user-${req.user.id}-${Date.now()}.${extention}`);
+//     const extension = file.mimetype.split('/')[1];
+//     cb(null, `user-${req.user.id}-${Date.now()}.${extension}`);
 //   },
 // });
 const multerStorage = multer.memoryStorage();
@@ -76,13 +76,13 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   if (req.body.password || req.body.passwordConfirm)
     return next(
       new AppError(
-        'If you want to reset your password pleae go to /updateMyPassword',
+        'If you want to reset your password please go to /updateMyPassword',
         400
       )
     );
 
   // 2] filter out the unwanted fields that are not allowed to updated
-  const filterObj = filtrObject(req.body, 'name', 'email');
+  const filterObj = filterObject(req.body, 'name', 'email');
   if (req.file) filterObj.photo = req.file.filename;
 
   //3] update user's document in the database
@@ -107,15 +107,15 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
     data: null,
   });
 });
-exports.creatUser = (req, res) => {
+exports.createUser = (req, res) => {
   res.status(500).json({
     status: 'error',
-    message: 'This rout is not defiend,Use this rout instead /signUp',
+    message: 'This rout is not defined,Use this rout instead /signUp',
   });
 };
 exports.getAllUsers = factory.getAll(User);
 exports.getUser = factory.getOne(User);
-// we do not update User's password using this handeller
-// insted we use resetPassword from authController file
-exports.updatUser = factory.updateOne(User);
+// we do not update User's password using this handler
+// instead we use resetPassword from authController file
+exports.updateUser = factory.updateOne(User);
 exports.deleteUser = factory.deleteOne(User);

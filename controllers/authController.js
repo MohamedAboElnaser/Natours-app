@@ -11,17 +11,17 @@ const signToken = (id) =>
     expiresIn: process.env.JWT_EXPIRE_IN,
   });
 
-const creatSendToken = (user, statusCode, res) => {
+const createSendToken = (user, statusCode, res) => {
   const token = signToken(user._id);
-  const cookiOptions = {
+  const cookieOptions = {
     expires: new Date(
       Date.now() + process.env.COOKI_EXPIRES_IN * 24 * 60 * 60 * 1000
     ),
     httpOnly: true,
   };
-  if (process.env.NODE_ENV === 'production') cookiOptions.secure = true;
+  if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
 
-  res.cookie('jwt', token, cookiOptions);
+  res.cookie('jwt', token, cookieOptions);
   res.status(statusCode).json({
     status: 'success',
     token,
@@ -42,18 +42,18 @@ exports.signup = catchAsync(async (req, res, next) => {
   const url=`${req.protocol}://${req.get('host')}/me`;
   await new Email(newUser,url).sendWelcome();
 
-  //   creatSendToken(newUser, 201, res); this cause data leake:(
+  //   createSendToken(newUser, 201, res); this cause data leak:(
   // 3] send back the token to the client
   const token = signToken(newUser._id);
-  const cookiOptions = {
+  const cookieOptions = {
     expires: new Date(
       Date.now() + process.env.COOKI_EXPIRES_IN * 24 * 60 * 60 * 1000
     ),
     httpOnly: true,
   };
-  if (process.env.NODE_ENV === 'production') cookiOptions.secure = true;
+  if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
 
-  res.cookie('jwt', token, cookiOptions);
+  res.cookie('jwt', token, cookieOptions);
   newUser.password = undefined;
   res.status(201).json({
     status: 'success',
@@ -67,7 +67,7 @@ exports.login = catchAsync(async (req, res, next) => {
   // 1] get pass and email
   const { password, email } = req.body;
 
-  //2]check the existance of pass and email
+  //2]check the existence of pass and email
   if (!password || !email) {
     return next(new AppError('Pleas enter a password and email', 400));
   }
@@ -76,11 +76,11 @@ exports.login = catchAsync(async (req, res, next) => {
   const user = await User.findOne({ email }).select('+password');
 
   if (!user || !(await user.correctPassword(password, user.password))) {
-    return next(new AppError('Invalide username or password', 401));
+    return next(new AppError('Invalid username or password', 401));
   }
 
   //4] send the token back to the client
-  creatSendToken(user, 200, res);
+  createSendToken(user, 200, res);
 });
 
 exports.logout = (req, res) => {
@@ -158,7 +158,7 @@ exports.isLoggedIn = async (req, res, next) => {
       if (currentUser.changedPasswordAfter(decodedToken.iat)) {
         return next();
       }
-      // this means there is already loged in user so I set this user to locals probery of response object
+      // this means there is already logdIn user so I set this user to locals property of response object
       // to have access to it in pug template
       res.locals.user = currentUser;
 
@@ -185,10 +185,10 @@ exports.forgetPassword = catchAsync(async (req, res, next) => {
   // 1] get user based on Posted email
   const user = await User.findOne({ email: req.body.email });
   if (!user)
-    return next(new AppError('Ther is no user with that email Address', 404));
+    return next(new AppError('There is no user with that email Address', 404));
 
-  // 2] Generate randome token
-  const resetToken = user.createPasswordResetToken(); //this methode change the content of the user doc
+  // 2] Generate radome token
+  const resetToken = user.createPasswordResetToken(); //this method change the content of the user doc
   await user.save({ validateBeforeSave: false });
 
   //3] send the  token to user's email
@@ -205,7 +205,7 @@ exports.forgetPassword = catchAsync(async (req, res, next) => {
   } catch (err) {
     //reset the user passwordResetToken and passwordResetExpires properties
     user.passwordResetToken = undefined;
-    user.paswordResetExpires = undefined;
+    user.passwordResetExpires = undefined;
     await user.save({ validateBeforeSave: false });
     return next(new AppError('There were an error sending the email.', 500));
   }
@@ -220,7 +220,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 
   const user = await User.findOne({
     passwordResetToken: hashedToken,
-    paswordResetExpires: { $gt: Date.now() },
+    passwordResetExpires: { $gt: Date.now() },
   });
 
   // 2] If token has not expired, and there is user, set the new password
@@ -230,23 +230,23 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   user.password = req.body.password;
   user.passwordConfirm = req.body.passwordConfirm;
   user.passwordResetToken = undefined;
-  user.paswordResetExpires = undefined;
+  user.passwordResetExpires = undefined;
   await user.save();
   //3] Update passwordChangedAt property for the user -->done using the pre middleware function
 
   //4]log the user in,send jwt back to the client
-  creatSendToken(user, 200, res);
+  createSendToken(user, 200, res);
 });
 
 exports.updatePassword = catchAsync(async (req, res, next) => {
   //   1]Get user from collection
   //here we have the access to user property of the req from the protect middleware
   const user = await User.findOne({ _id: req.user._id }).select('+password');
-  // console.log('user from updatepassword:', user);
+  // console.log('user from update password:', user);
   //   2]check if Posted current password is correct
   if (!(await user.correctPassword(req.body.currentPassword, user.password)))
     return next(
-      new AppError('Your current password is worng ,pleas try again', 401)
+      new AppError('Your current password is wrong ,pleas try again', 401)
     );
 
   //   3]If so, update password
@@ -255,5 +255,5 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   await user.save();
 
   //   4]Log user in, send the jwt back to the client
-  creatSendToken(user, 200, res);
+  createSendToken(user, 200, res);
 });

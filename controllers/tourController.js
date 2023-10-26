@@ -67,7 +67,7 @@ exports.aliasTop5tours = (req, res, next) => {
 
 exports.getAllTours = factory.getAll(Tour);
 exports.getTour = factory.getOne(Tour, { path: 'reviews', select: '-__v' });
-exports.creatTour = factory.creatOne(Tour);
+exports.createTour = factory.createOne(Tour);
 exports.updateTour = factory.updateOne(Tour);
 exports.deleteTour = factory.deleteOne(Tour);
 
@@ -158,7 +158,7 @@ exports.getToursWithin = catchAsync(async (req, res, next) => {
 
   if (!lng || !lat)
     return next(
-      new AppError('Please provide latitut and lanitude in the format lat,lng')
+      new AppError('Please provide latitude and longitude in the format lat,lng')
     );
 
   const tours = await Tour.find({
@@ -170,7 +170,7 @@ exports.getToursWithin = catchAsync(async (req, res, next) => {
   });
 
   res.status(200).json({
-    staus: 'success',
+    status: 'success',
     results: tours.length,
     data: {
       data: tours,
@@ -185,7 +185,7 @@ exports.getTorDistances = catchAsync(async (req, res, next) => {
 
   if (!lng || !lat)
     return next(
-      new AppError('Please provide latitut and lanitude in the format lat,lng')
+      new AppError('Please provide latitude and longitude in the format lat,lng')
     );
   const disMultiplier = unit === 'mi' ? 0.000621371 : 0.001;
   const distances = await Tour.aggregate([

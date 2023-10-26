@@ -36,7 +36,7 @@ const reviewSchema = new mongoose.Schema(
   }
 );
 
-// creating an indext to prevent Duplicate reviews for the same user
+// creating an Index to prevent Duplicate reviews for the same user
 reviewSchema.index({ tour: 1, user: 1 }, { unique: true });
 
 // query middlewares
@@ -100,7 +100,7 @@ reviewSchema.post('save', (doc) => {
 reviewSchema.pre(/^findOneAnd/, async function (next) {
   /*
   here this refers to the query object 
-  and i attacth the r[review] to the query to access to it in the next middleware in the stack which is [post 'save' hook]
+  and i attach the r[review] to the query to access to it in the next middleware in the stack which is [post 'save' hook]
   */
   this.r = await this.findOne();
   next();

@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 
 process.on('uncaughtException', (err) => {
-  console.log('UncaughtedExcepton happen 💥💥', err);
+  console.log('uncaughtException happen 💥💥', err);
   process.exit();
 });
 // the arrange is important here :)
@@ -20,7 +20,7 @@ mongoose
     useFindAndModify: false,
     useUnifiedTopology: true,
   })
-  .then(() => console.log('DB Concection stablished succesfuly'))
+  .then(() => console.log('DB connection established successfully'))
   .catch((err) => {
     console.log(`There is error 😡`, err);
   });
@@ -34,7 +34,7 @@ const server = app.listen(port, () => {
     );
 });
 
-//Global handleing the unhandled rejected promises
+//Global handling the unhandled rejected promises
 
 process.on('unhandledRejection', () => {
   console.log('Unhandled Rejection happen 😡');
